@@ -7,6 +7,7 @@ import ArrowForwardIosRoundedIcon from '@material-ui/icons/ArrowForwardIosRounde
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import SelectCars from '~/components/SelectCars';
+// SelectCars отдельный компонент, где задаются activeCars
 
 const useStyles = makeStyles(theme => ({
   typography: {
