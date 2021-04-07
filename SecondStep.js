@@ -211,7 +211,7 @@ function SecondStep(props) {
   const [cargoTypes, setCargoTypes] = useState();
   const [tableStateFlag, setTableStateFlag] = useState(false);
   const [editFlag, setEditFlag] = useState(false);
-  const [editInfo, setEditInfo] = useState([]);
+  const [editInfo, setEditInfo] = useState([]); // Данные о существующем предложении
   // const [rows, setRows] = useState([]);
   // const [processedRows, setProcessedRows] = useState();
   const [selectedCargoTypes, setSelectedCargoTypes] = useState([]);
@@ -230,8 +230,13 @@ function SecondStep(props) {
   const [returnStations, setReturnStations] = useState([]);
   const [currentModel, setCurrentModel] = useState();
 
+  /*
+    Обновление данных по вагону/вагонам при редактировании.
+    Когда вызван handleEditCar, заполняются данные по вагоны,
+    при этом есть возможность сохранить изменения для всех.
+  */
   function handleClick() {
-    if (selectedIndex === 0) {
+    if (selectedIndex === 0) { // Для одного вагона
       const newCars = carsInfo.map((car) => {
         const newCar = { ...car };
         if (activeCars.includes(newCar.vagon_number)) {
@@ -255,7 +260,7 @@ function SecondStep(props) {
       });
       setTableStateFlag(true);
       props.setCars(newCars);
-    } else {
+    } else { // Для всех вагонов
       const newCars = carsInfo.map((car) => {
         const newCar = { ...car };
         newCar.date = date && date.local().format('YYYY-MM-DD');
@@ -273,6 +278,7 @@ function SecondStep(props) {
     setOpenEdit(false);
   }
 
+  // Подгрузка данных для редактирования вагона при создании или редактировании
   function handleEditCar(vagonNumber, model) {
     setOpenEdit(true);
     setActiveCarsInfo([vagonNumber]);
@@ -296,23 +302,23 @@ function SecondStep(props) {
       setSelectedCargoTypes(car.selected_cargo_types);
     }
   }
-
-  const handleMenuItemClick = (event, index) => {
-    setSelectedIndex(index);
-    setOpenButton(false);
-  };
-
-  const handleToggle = () => {
-    setOpenButton((prevOpen) => !prevOpen);
-  };
-
-  const handleCloseButton = (event) => {
-    if (anchorRef.current && anchorRef.current.contains(event.target)) {
-      return;
-    }
-    setCurrentModel();
-    setOpenButton(false);
-  };
+  //
+  // const handleMenuItemClick = (event, index) => {
+  //   setSelectedIndex(index);
+  //   setOpenButton(false);
+  // };
+  //
+  // const handleToggle = () => {
+  //   setOpenButton((prevOpen) => !prevOpen);
+  // };
+  //
+  // const handleCloseButton = (event) => {
+  //   if (anchorRef.current && anchorRef.current.contains(event.target)) {
+  //     return;
+  //   }
+  //   setCurrentModel();
+  //   setOpenButton(false);
+  // };
   // todo paginate props.cars
 
   useEffect(() => {
@@ -323,6 +329,7 @@ function SecondStep(props) {
     }
   }, [selectedIndex]);
 
+  // Заполнение полей для отображения при редактировании
   useEffect(() => {
     if (editFlag) {
       const loadCars = editInfo.offer.cars;
@@ -364,6 +371,7 @@ function SecondStep(props) {
     }
   }, [editInfo]);
 
+  // Обновление полей что будут отображаться
   useEffect(() => {
     if (tableStateFlag) {
       if (props.offerId) {
@@ -386,151 +394,159 @@ function SecondStep(props) {
     }
   }, [props.tableState]);
 
-  const rows = carsInfo;
-  const processedRows = rows.map((r) => {
-    // eslint-disable-next-line no-param-reassign
-    r = { ...r };
-    const { vagon_number } = r;
-    const { model } = r;
+  // const rows = carsInfo;
+  // const processedRows = rows.map((r) => {
+  //   // eslint-disable-next-line no-param-reassign
+  //   r = { ...r };
+  //   const { vagon_number } = r;
+  //   const { model } = r;
+  //
+  //   r.actions = (
+  //     <>
+  //       <Tooltip title="Редактировать">
+  //         <IconButton
+  //           aria-label="edit"
+  //           color="primary"
+  //           onClick={() => {
+  //             handleEditCar(vagon_number, model);
+  //           }}
+  //         >
+  //           <EditIcon />
+  //         </IconButton>
+  //       </Tooltip>
+  //     </>
+  //   );
+  //   return r;
+  // });
+  //
+  // const handleChangePage = (event, newPage) => {
+  //   setPage(newPage);
+  // };
+  //
+  // const handleClose = () => {
+  //   setOpenEdit(false);
+  // };
+  //
+  // const handleChangeRowsPerPage = (event) => {
+  //   setPerPage(parseInt(event.target.value, 36));
+  //   setPage(0);
+  // };
+  //
+  // //    border-left: 3px solid #1de9b6 !important;
+  // const messages = {
+  //   invalidDateMessage: 'Неверный формат даты',
+  //   maxDateMessage: 'Дата не должна быть больше максимальной',
+  //   minDateMessage: 'Дата не должна быть меньше минимальной',
+  // };
+  //
+  // const errDict = {
+  //   'The given data was invalid.': 'Неверные данные.',
+  // };
+  //
+  // const openError = Boolean(anchorElError);
+  // const idError = openError ? 'simple-popover' : undefined;
+  //
+  // const handleCloseError = () => {
+  //   setAnchorElError(null);
+  // };
+  //
+  // const handleStationsChange = (newValue) => {
+  //   setStations(newValue);
+  // };
+  //
+  // const handleReturnStationsChange = (newValue) => {
+  //   setReturnStations(newValue);
+  // };
+  //
+  // const today = dayjs().format('YYYY-MM-DD');
+  //
+  // const handlePriceChange = (event) => {
+  //   const newPrice = event.target.value;
+  //   setPrice(newPrice);
+  //   // handleAttributeChange('price', newPrice)
+  // };
+  //
+  // function handleDateChange(value) {
+  //   let tmp = null;
+  //   if (value && value.isValid()) {
+  //     // tmp = value.local().format('YYYY-MM-DD');
+  //     tmp = value;
+  //   }
+  //   setDate(tmp);
+  // }
+  //
+  // function handleDateChange2(value) {
+  //   let tmp = null;
+  //   if (value && value.isValid()) {
+  //     // tmp = value.local().format('YYYY-MM-DD');
+  //     tmp = value;
+  //   }
+  //   setDate2(tmp);
+  // }
+  //
+  // const handleCreate = (event) => {
+  //   const eventTarget = event.currentTarget;
+  //
+  //   const offerCars = rows.map((car) => ({
+  //     number: car.vagon_number,
+  //     date: car.date,
+  //     date2: car.date2,
+  //     station_acceptance: car.station_acceptance,
+  //     station_return: car.station_return,
+  //     price: car.price,
+  //     cargo_types: car.selected_cargo_types,
+  //   }));
+  //
+  //   if (props.offerId) {
+  //     axios
+  //       .post('/api/my_offers/edit', { id: props.offerId, cars: offerCars })
+  //       .then((response) => {
+  //         window.location.href = '/my_offers';
+  //       })
+  //       .catch((err) => {
+  //         setErrMessage(errDict[err.response.data.message]);
+  //         setAnchorElError(eventTarget);
+  //       });
+  //   } else {
+  //     axios
+  //       .post('/api/my_offers/new', { cars: offerCars })
+  //       .then((response) => {
+  //         props.offerCreatedCallback(response.data.id);
+  //         enqueueSnackbar('Предложение создано', { variant: 'success' });
+  //         props.getData();
+  //         props.handleClose();
+  //       })
+  //       .catch((err) => {
+  //         setErrMessage(errDict[err.response.data.message]);
+  //         setAnchorElError(eventTarget);
+  //       });
+  //   }
+  //   return null;
+  // };
+  //
+  // const handleCancel = () => {
+  //   setCarsInfo([]);
+  //   setModelsInfo([]);
+  //   setActiveCarsInfo([]);
+  //   props.handleClose();
+  //   props.setStep(0);
+  // };
 
-    r.actions = (
-      <>
-        <Tooltip title="Редактировать">
-          <IconButton
-            aria-label="edit"
-            color="primary"
-            onClick={() => {
-              handleEditCar(vagon_number, model);
-            }}
-          >
-            <EditIcon />
-          </IconButton>
-        </Tooltip>
-      </>
-    );
-    return r;
-  });
 
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
 
-  const handleClose = () => {
-    setOpenEdit(false);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setPerPage(parseInt(event.target.value, 36));
-    setPage(0);
-  };
-
-  //    border-left: 3px solid #1de9b6 !important;
-  const messages = {
-    invalidDateMessage: 'Неверный формат даты',
-    maxDateMessage: 'Дата не должна быть больше максимальной',
-    minDateMessage: 'Дата не должна быть меньше минимальной',
-  };
-
-  const errDict = {
-    'The given data was invalid.': 'Неверные данные.',
-  };
-
-  const openError = Boolean(anchorElError);
-  const idError = openError ? 'simple-popover' : undefined;
-
-  const handleCloseError = () => {
-    setAnchorElError(null);
-  };
-
-  const handleStationsChange = (newValue) => {
-    setStations(newValue);
-  };
-
-  const handleReturnStationsChange = (newValue) => {
-    setReturnStations(newValue);
-  };
-
-  const today = dayjs().format('YYYY-MM-DD');
-
-  const handlePriceChange = (event) => {
-    const newPrice = event.target.value;
-    setPrice(newPrice);
-    // handleAttributeChange('price', newPrice)
-  };
-
-  function handleDateChange(value) {
-    let tmp = null;
-    if (value && value.isValid()) {
-      // tmp = value.local().format('YYYY-MM-DD');
-      tmp = value;
-    }
-    setDate(tmp);
-  }
-
-  function handleDateChange2(value) {
-    let tmp = null;
-    if (value && value.isValid()) {
-      // tmp = value.local().format('YYYY-MM-DD');
-      tmp = value;
-    }
-    setDate2(tmp);
-  }
-
-  const handleCreate = (event) => {
-    const eventTarget = event.currentTarget;
-
-    const offerCars = rows.map((car) => ({
-      number: car.vagon_number,
-      date: car.date,
-      date2: car.date2,
-      station_acceptance: car.station_acceptance,
-      station_return: car.station_return,
-      price: car.price,
-      cargo_types: car.selected_cargo_types,
-    }));
-
-    if (props.offerId) {
-      axios
-        .post('/api/my_offers/edit', { id: props.offerId, cars: offerCars })
-        .then((response) => {
-          window.location.href = '/my_offers';
-        })
-        .catch((err) => {
-          setErrMessage(errDict[err.response.data.message]);
-          setAnchorElError(eventTarget);
-        });
-    } else {
-      axios
-        .post('/api/my_offers/new', { cars: offerCars })
-        .then((response) => {
-          props.offerCreatedCallback(response.data.id);
-          enqueueSnackbar('Предложение создано', { variant: 'success' });
-          props.getData();
-          props.handleClose();
-        })
-        .catch((err) => {
-          setErrMessage(errDict[err.response.data.message]);
-          setAnchorElError(eventTarget);
-        });
-    }
-    return null;
-  };
-
-  const handleCancel = () => {
-    setCarsInfo([]);
-    setModelsInfo([]);
-    setActiveCarsInfo([]);
-    props.handleClose();
-    props.setStep(0);
-  };
-
+  /*
+    props.offerId изначально передается со значением null,
+    что означает создание предложения. Если передается id
+    предложения значит предложение редактируется.
+  */
   useEffect(() => {
-    setCarsInfo([]);
+    setCarsInfo([]); // сброс данных
     setModelsInfo([]);
     setActiveCarsInfo([]);
     // setCargoTypesInfo([]);
     if (props.offerId) {
       setEditFlag(true);
+      // редактировние - подгрузка данных предложения
       axios
         .get(`/api/my_offer/${props.offerId}`)
         .then((response) => {
@@ -540,36 +556,40 @@ function SecondStep(props) {
           console.log(err.response.data.message);
         });
     } else {
+      // Создание
       setTableStateFlag(true);
       props.getCarsInfo();
     }
   }, [props.offerId]);
 
-  const handleCargoChange = () => {
-    setCargoState(!cargoState);
-  };
 
-  const handleCargoClick = (event, name) => {
-    const selectedCargoIndex = selectedCargoTypes.indexOf(name);
-    let newSelected = [];
 
-    if (selectedCargoIndex === -1) {
-      newSelected = newSelected.concat(selectedCargoTypes, name);
-    } else if (selectedCargoIndex === 0) {
-      newSelected = newSelected.concat(selectedCargoTypes.slice(1));
-    } else if (selectedCargoIndex === selectedCargoTypes.length - 1) {
-      newSelected = newSelected.concat(selectedCargoTypes.slice(0, -1));
-    } else if (selectedCargoIndex > 0) {
-      newSelected = newSelected.concat(
-        selectedCargoTypes.slice(0, selectedCargoIndex),
-        selectedCargoTypes.slice(selectedCargoIndex + 1),
-      );
-    }
-
-    setSelectedCargoTypes(newSelected);
-  };
-  const isSelected = (name) => selectedCargoTypes.indexOf(name) !== -1;
-  const model = models.find((m) => m.code === currentModel);
+  //
+  // const handleCargoChange = () => {
+  //   setCargoState(!cargoState);
+  // };
+  //
+  // const handleCargoClick = (event, name) => {
+  //   const selectedCargoIndex = selectedCargoTypes.indexOf(name);
+  //   let newSelected = [];
+  //
+  //   if (selectedCargoIndex === -1) {
+  //     newSelected = newSelected.concat(selectedCargoTypes, name);
+  //   } else if (selectedCargoIndex === 0) {
+  //     newSelected = newSelected.concat(selectedCargoTypes.slice(1));
+  //   } else if (selectedCargoIndex === selectedCargoTypes.length - 1) {
+  //     newSelected = newSelected.concat(selectedCargoTypes.slice(0, -1));
+  //   } else if (selectedCargoIndex > 0) {
+  //     newSelected = newSelected.concat(
+  //       selectedCargoTypes.slice(0, selectedCargoIndex),
+  //       selectedCargoTypes.slice(selectedCargoIndex + 1),
+  //     );
+  //   }
+  //
+  //   setSelectedCargoTypes(newSelected);
+  // };
+  // const isSelected = (name) => selectedCargoTypes.indexOf(name) !== -1;
+  // const model = models.find((m) => m.code === currentModel);
   return (
     <Animated animationIn="bounceInLeft" animationOut="fadeOut" isVisible>
       <div className={classes.space}>
@@ -870,8 +890,8 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   getData: () => dispatch(getData()),
-  getCarsInfo: () => dispatch(getCarsInfo()),
-  setActiveCars: (cars) => dispatch(setActiveCars(cars)),
+  getCarsInfo: () => dispatch(getCarsInfo()), // Подгрузка информации по выбранным вагонам на первом этапе
+  setActiveCars: (cars) => dispatch(setActiveCars(cars)), // Подгрузка номеров выбранных вагонов на первом этапе
   setCars: (cars) => dispatch(setCars(cars)),
 });
 
